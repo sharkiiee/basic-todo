@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const app = express();
 
 // Object destructuring
@@ -9,6 +10,13 @@ const { Todo } = require("./db.");
 
 // Making sure all the post endpoint will work
 app.use(express.json());
+
+// This will allow your backend to connect to the particular frontend silently.
+app.use(cors({
+    origin:"http://localhost:5173"
+}));
+
+// app.use(cors()) --> This allow any frontend to connect to your backend.
 
 //post endpoint to post all the todos
 app.post("/todo",async function(req,res){
@@ -33,7 +41,7 @@ app.post("/todo",async function(req,res){
 
 //GET - To get all the todos.
 app.get("/todos",async function(req,res){
-    const todos = await Todo.find();
+    const todos =await Todo.find({});
 
     res.json({
         todos
@@ -57,8 +65,14 @@ app.put("/completed",async function(req,res){
     },{
         completed:true
     });
-    
+
     res.json({
         message: "todo is been updated"
     })
+})
+
+const PORT = 3000;
+
+app.listen(PORT,()=>{
+    console.log(`server is running on PORT ${PORT}`)
 })
